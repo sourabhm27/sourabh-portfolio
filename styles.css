@@ -194,6 +194,9 @@
     font-family:'Archivo'; font-weight:700; font-size:120px;
     background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;
   }
+  .hero-photo-inner .profile-img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
   .ring{
     position:absolute; border-radius:50%; border:1px solid var(--glass-border);
   }
@@ -241,6 +244,9 @@
     width:100%; height:100%; border-radius:16px;
     background: linear-gradient(160deg, #14141a, #0a0a0c);
     display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;
+  }
+  .about-photo-inner .about-profile-img{
+    width:100%; height:100%; object-fit:cover; display:block;
   }
   .info-cards{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:34px; }
   .info-card{ padding:20px; border-radius:18px; }
@@ -333,18 +339,26 @@
     height:340px; position:relative; overflow:hidden;
     display:flex; align-items:center; justify-content:center;
     transition: transform .6s ease;
+    background: linear-gradient(155deg,#1a1a1a,#0a0a0a);
+  }
+  .proj-media img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;
+  }
+  .proj-media::after{
+    content:''; position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.55) 100%);
   }
   .proj-card:hover .proj-media{ transform:scale(1.04); }
   .proj-media .tag{
-    position:absolute; top:18px; left:18px; font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    position:absolute; top:18px; left:18px; z-index:2; font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
     padding:6px 12px; border-radius:100px; font-family:'Inter'; background:rgba(0,0,0,0.4); backdrop-filter:blur(6px);
   }
   .proj-body{ padding:24px 26px; background:rgba(255,255,255,0.03); }
   .proj-body h3{ font-size:20px; font-weight:600; }
   .proj-body p{ font-size:13.5px; margin-top:6px; }
   .proj-arrow{
-    position:absolute; bottom:24px; right:24px; width:42px; height:42px; border-radius:50%;
-    background:rgba(255,255,255,0.08); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center;
+    position:absolute; bottom:24px; right:24px; z-index:2; width:42px; height:42px; border-radius:50%;
+    background:rgba(255,255,255,0.12); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center;
     transition: transform .35s ease, background .35s ease;
   }
   .proj-card:hover .proj-arrow{ transform:rotate(45deg); background:var(--grad); }
@@ -356,18 +370,19 @@
   .media-4{ background: linear-gradient(155deg,#0e1420,#0a0a0a); }
 
   /* ---------- modal / case study ---------- */
-  #modal-overlay{
+  #modal-overlay,
+  .modal-overlay{
     position:fixed; inset:0; background:rgba(5,5,6,0.85); backdrop-filter:blur(10px);
     z-index:100; display:flex; align-items:flex-start; justify-content:center;
     opacity:0; pointer-events:none; transition:opacity .35s ease; padding:40px 20px;
     overflow-y:auto;
   }
-  #modal-overlay.open{ opacity:1; pointer-events:auto; }
+  .modal-overlay.open{ opacity:1; pointer-events:auto; }
   .modal-panel{
     max-width:900px; width:100%; border-radius:26px; padding:0; margin-top:20px;
     transform:translateY(30px); transition:transform .4s ease; background:var(--panel); border:1px solid var(--glass-border);
   }
-  #modal-overlay.open .modal-panel{ transform:translateY(0); }
+  .modal-overlay.open .modal-panel{ transform:translateY(0); }
   .modal-close{
     position:sticky; top:20px; float:right; margin:20px 20px 0 0; width:40px; height:40px; border-radius:50%;
     background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:5;
@@ -382,6 +397,25 @@
   .swatch-row{ display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
   .swatch{ width:52px; height:52px; border-radius:12px; border:1px solid var(--glass-border); }
   .m-tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+
+  .figma-embed{
+    width:100%; aspect-ratio:16/10; border-radius:16px; overflow:hidden;
+    border:1px solid var(--glass-border); background:rgba(255,255,255,0.03); margin-top:4px;
+  }
+  .figma-embed iframe{
+    width:100%; height:100%; border:none; display:block;
+  }
+  @media(max-width:640px){ .figma-embed{ aspect-ratio:4/5; } }
+  .gallery-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-top:16px; }
+  .gallery-grid img{
+    width:100%; height:160px; object-fit:cover; border-radius:14px; border:1px solid var(--glass-border);
+    background:rgba(255,255,255,0.03);
+  }
+  .modal-hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+  .modal-hero::after{
+    content:''; position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.75) 100%);
+  }
 
   /* ---------- certificate ---------- */
   #certificate{ padding:100px 0; }
