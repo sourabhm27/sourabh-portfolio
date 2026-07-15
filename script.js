@@ -65,7 +65,7 @@ services.forEach(s=>{
   servicesGrid.appendChild(el);
 });
 
-/* ---------------- project modals (static per-project HTML, real images) ---------------- */
+/* ---------------- project modals: full-screen poster viewer ---------------- */
 document.querySelectorAll('.proj-card').forEach(card=>{
   card.addEventListener('click', ()=>{
     const modal = document.getElementById(card.dataset.modal);
@@ -75,14 +75,25 @@ document.querySelectorAll('.proj-card').forEach(card=>{
   });
 });
 
+function closeAllModals(){
+  document.querySelectorAll('.modal-overlay.open').forEach(modal=>{
+    modal.classList.remove('open');
+  });
+  document.body.style.overflow = '';
+}
+
 document.querySelectorAll('.modal-overlay').forEach(modal=>{
   const closeBtn = modal.querySelector('.modal-close');
-  const close = ()=>{
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
-  };
-  if(closeBtn) closeBtn.addEventListener('click', close);
-  modal.addEventListener('click', e=>{ if(e.target === modal) close(); });
+  if(closeBtn) closeBtn.addEventListener('click', closeAllModals);
+  // click anywhere outside the image (the dark backdrop) closes it
+  modal.addEventListener('click', e=>{
+    if(e.target === modal) closeAllModals();
+  });
+});
+
+// Escape key closes an open poster viewer
+document.addEventListener('keydown', e=>{
+  if(e.key === 'Escape') closeAllModals();
 });
 
 /* ---------------- mobile menu toggle (real) ---------------- */
@@ -192,8 +203,6 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
   const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
   const mailtoLink = `mailto:sourabhmagadum528@gmail.com?subject=${subject}&body=${body}`;
 
-  // Opens the visitor's own email client with everything pre-filled —
-  // works everywhere with zero backend, API keys, or third-party accounts.
   window.location.href = mailtoLink;
 
   note.style.color = 'var(--muted)';
