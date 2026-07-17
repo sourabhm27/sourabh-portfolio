@@ -1,42 +1,5 @@
 gsap.registerPlugin(ScrollTrigger);
 
-/* ---------------- cinematic smooth scrolling (Lenis) ---------------- */
-const lenis = new Lenis({
-  duration: 1.4,                                   // slower = more cinematic glide
-  easing: (t) => 1 - Math.pow(1 - t, 4),            // smooth easeOutQuart deceleration
-  smoothWheel: true,
-  wheelMultiplier: 0.85,
-  touchMultiplier: 1.1,
-  syncTouch: true,
-});
-
-// drive Lenis from GSAP's own ticker so it never desyncs from scroll-triggered animations
-gsap.ticker.add((time) => {
-  lenis.raf(time * 1000);
-});
-gsap.ticker.lagSmoothing(0);
-
-// keep ScrollTrigger positions accurate as Lenis scrolls
-lenis.on('scroll', ScrollTrigger.update);
-
-// smooth in-page nav links (#hero, #about, etc.) through Lenis too
-document.querySelectorAll('a[href^="#"]').forEach(link => {
-  link.addEventListener('click', (e) => {
-    const targetId = link.getAttribute('href');
-    if (targetId.length > 1) {
-      const target = document.querySelector(targetId);
-      if (target) {
-        e.preventDefault();
-        lenis.scrollTo(target, { offset: -90, duration: 1.6, easing: (t)=>1-Math.pow(1-t,4) });
-      }
-    }
-  });
-});
-
-// pause/resume Lenis while a poster modal is open so the background can't scroll
-function pauseSmoothScroll(){ lenis.stop(); }
-function resumeSmoothScroll(){ lenis.start(); }
-
 /* ---------------- data ---------------- */
 const skillItems = [
   {name:"Adobe Photoshop", bg:"#001E36", fg:"#31A8FF", label:"Ps", pct:95},
@@ -109,7 +72,6 @@ document.querySelectorAll('.proj-card').forEach(card=>{
     if(!modal) return;
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
-    pauseSmoothScroll();
   });
 });
 
@@ -118,7 +80,6 @@ function closeAllModals(){
     modal.classList.remove('open');
   });
   document.body.style.overflow = '';
-  resumeSmoothScroll();
 }
 
 document.querySelectorAll('.modal-overlay').forEach(modal=>{
@@ -200,7 +161,7 @@ setInterval(()=>{
   gsap.to(roleList, {y: -roleIndex*1.15+"em", duration:0.7, ease:"power3.inOut"});
 }, 2600);
 
-/* ---------------- scroll reveal (+ subtle cinematic parallax on project posters) ---------------- */
+/* ---------------- scroll reveal ---------------- */
 window.addEventListener('load', ()=>{
   gsap.utils.toArray('.reveal').forEach((el,i)=>{
     gsap.to(el, {
@@ -215,25 +176,13 @@ window.addEventListener('load', ()=>{
       onEnter:()=> gsap.to(bar, {width: bar.dataset.pct+"%", duration:1.2, ease:"power2.out"})
     });
   });
-  // gentle parallax drift on project poster images as they scroll through view
-  document.querySelectorAll('.proj-media img').forEach(img=>{
-    gsap.fromTo(img, {yPercent:-6}, {
-      yPercent:6, ease:"none",
-      scrollTrigger:{
-        trigger: img.closest('.proj-card'),
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 0.6
-      }
-    });
-  });
   // hero reveal immediately
   gsap.to('#hero .reveal', {opacity:1, y:0, duration:1, stagger:0.12, ease:"power3.out"});
 });
 
 /* ---------------- back to top ---------------- */
 document.getElementById('toTop').addEventListener('click', ()=>{
-  lenis.scrollTo(0, { duration: 1.6, easing: (t)=>1-Math.pow(1-t,4) });
+  window.scrollTo({top:0, behavior:'smooth'});
 });
 
 /* ---------------- contact form (real, mailto-based — no backend required) ---------------- */
@@ -264,5 +213,4 @@ document.getElementById('contactForm').addEventListener('submit', function(e){
 /* reduced motion respect */
 if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
   document.querySelectorAll('.reveal').forEach(el=>{ el.style.opacity=1; el.style.transform='none'; });
-  lenis.destroy();
 }
